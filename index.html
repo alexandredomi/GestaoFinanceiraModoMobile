@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Financeira - ModoMobile</title>
+    <link rel="shortcut icon" href="fe1680d9e81708fd79fc27b791401673-icone-de-calculadora-plana.webp" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: var(--white);
+            padding: 25px 0;
+
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        h2 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 25px 0 15px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 12px 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f1f3f9;
+            color: var(--dark);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .total-row {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-left: 4px solid var(--primary);
+            padding: 20px;
+            border-radius: 5px;
+            margin: 25px 0;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .result-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .positive {
+            color: #2e7d32;
+        }
+
+        .negative {
+            color: #c62828;
+        }
+
+        .goals-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .goal-card {
+            background: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border-top: 3px solid var(--primary);
+        }
+
+        .goal-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--gray);
+        }
+
+        .goal-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .icon {
+            font-size: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .goals-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container header-content">
+            <h1><i class="fas fa-chart-line icon"></i> Gestão Financeira - ModoMobile</h1>
+            <div id="current-date"></div>
+        </div>
+        
+    </header>
+
+    <div class="container">
+        <!-- Resultado Final -->
+        <div class="result-card">
+            <div class="result-title">Resultado Financeiro</div>
+            <div class="result-value" id="resultadoFinal">R$ 0,00</div>
+        </div>
+
+        <!-- Metas de Faturamento -->
+        <h2><i class="fas fa-bullseye icon"></i> Metas de Faturamento</h2>
+        <div class="goals-container" id="metas">
+            <div class="goal-card">
+                <div class="goal-title">Meta Mensal</div>
+                <div class="goal-value" id="metaMensal">R$ 0,00</div>
+            </div>
+            <div class="goal-card">
+                <div class="goal-title">Meta Semanal (4 semanas)</div>
+                <div class="goal-value" id="metaSemanal">R$ 0,00</div>
+            </div>
+            <div class="goal-card">
+                <div class="goal-title">Meta Diária (30 dias)</div>
+                <div class="goal-value" id="metaDiaria">R$ 0,00</div>
+            </div>
+        </div>
+        <br>
+        <!-- Seção de Receitas -->
+        <div class="card">
+            <div class="card-header">
+                <span><i class="fas fa-money-bill-wave icon"></i> Receita Mensal</span>
+            </div>
+            <div class="card-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fonte</th>
+                            <th>Valor (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Vendas da Loja</td>
+                            <td><input type="number" id="receita" oninput="atualizarTotais()" placeholder="0,00"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Seção de Despesas Fixas -->
+        <div class="card">
+            <div class="card-header">
+                <span><i class="fas fa-fixed fa-wallet icon"></i> Despesas Fixas da Loja</span>
+            </div>
+            <div class="card-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Valor (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Aluguel</td>
+                            <td><input type="number" id="aluguel" value="550" oninput="atualizarTotais()"></td>
+                        </tr>
+                        <tr>
+                            <td>Água</td>
+                            <td><input type="number" id="agua" value="50" oninput="atualizarTotais()"></td>
+                        </tr>
+                        <tr>
+                            <td>Luz</td>
+                            <td><input type="number" id="luz" value="50" oninput="atualizarTotais()"></td>
+                        </tr>
+                        <tr>
+                            <td>Internet</td>
+                            <td><input type="number" id="internet" value="100" oninput="atualizarTotais()"></td>
+                        </tr>
+                        <tr>
+                            <td>Transporte</td>
+                            <td><input type="number" id="transporte" value="400" oninput="atualizarTotais()"></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>Total Despesas</td>
+                            <td id="totalDespesas">0,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Seção de Distribuição do Lucro -->
+        <div class="card">
+            <div class="card-header">
+                <span><i class="fas fa-piggy-bank icon"></i> Distribuição do Lucro</span>
+            </div>
+            <div class="card-body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Destino</th>
+                            <th>Valor (R$)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Fundo de Emergência</td>
+                            <td><input type="number" id="reserva" value="300" oninput="atualizarTotais()"></td>
+                        </tr>
+                        <tr>
+                            <td>Reinvestimento na Loja</td>
+                            <td><input type="number" id="reinvestimento" value="400" oninput="atualizarTotais()"></td>
+                        </tr>
+                        <tr>
+                            <td>Pró-labore (salário)</td>
+                            <td><input type="number" id="prolabore" value="2500" oninput="atualizarTotais()"></td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>Total Distribuição</td>
+                            <td id="totalDistribuicao">0,00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Formatação de data
+        function formatDate(date) {
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('pt-BR', options);
+        }
+
+        document.getElementById('current-date').textContent = formatDate(new Date());
+
+        // Formatação monetária
+        function formatMoney(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        // Cálculo dos totais
+        function atualizarTotais() {
+            const receita = parseFloat(document.getElementById('receita').value) || 0;
+
+            // Despesas
+            const aluguel = parseFloat(document.getElementById('aluguel').value) || 0;
+            const agua = parseFloat(document.getElementById('agua').value) || 0;
+            const luz = parseFloat(document.getElementById('luz').value) || 0;
+            const internet = parseFloat(document.getElementById('internet').value) || 0;
+            const transporte = parseFloat(document.getElementById('transporte').value) || 0;
+
+            const totalDespesas = aluguel + agua + luz + internet + transporte;
+            document.getElementById('totalDespesas').textContent = formatMoney(totalDespesas);
+
+            // Distribuição
+            const reserva = parseFloat(document.getElementById('reserva').value) || 0;
+            const reinvestimento = parseFloat(document.getElementById('reinvestimento').value) || 0;
+            const prolabore = parseFloat(document.getElementById('prolabore').value) || 0;
+
+            const totalDistribuicao = reserva + reinvestimento + prolabore;
+            document.getElementById('totalDistribuicao').textContent = formatMoney(totalDistribuicao);
+
+            const totalNecessario = totalDespesas + totalDistribuicao;
+            const saldoFinal = receita - totalNecessario;
+
+            const resultadoElement = document.getElementById('resultadoFinal');
+            resultadoElement.textContent = formatMoney(Math.abs(saldoFinal));
+            resultadoElement.className = saldoFinal >= 0 ? 'result-value positive' : 'result-value negative';
+
+            // Atualizar metas
+            document.getElementById('metaMensal').textContent = formatMoney(totalNecessario);
+            document.getElementById('metaSemanal').textContent = formatMoney(totalNecessario / 4);
+            document.getElementById('metaDiaria').textContent = formatMoney(totalNecessario / 24);
+        }
+
+        // Inicializa os totais
+        atualizarTotais();
+    </script>
+</body>
+
+</html>
